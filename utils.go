@@ -9,3 +9,10 @@ func GenerateHash(longURL string) string {
 }
 
 
+func generateUniqueID() int  {
+    
+    
+    
+    
+    return 0
+}
