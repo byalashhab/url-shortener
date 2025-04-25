@@ -8,20 +8,26 @@ import (
 	"time"
 )
 
-func GenerateHash(longURL string) string {
-	// 7 chars for the hashed value
-	// [0-9][a-z][A-Z] 9 + 26 + 26 = 62
-	// base 62 hashing
+func GenerateHash(longURL string) (string, int) {
+	base62Chars := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	id := generateUniqueID()
 
-    // id := generateUniqueID()
+	base := len(base62Chars)
+	result := ""
 
-	return ""
+	for id > 0 {
+		remainder := id % base
+		result = string(base62Chars[remainder]) + result
+		id /= base
+	}
+
+	return result, id
 }
 
 // between 0 - 62^(7)
 func generateUniqueID() int {
 
-	str := fmt.Sprintf("%v%v", time.Now().Nanosecond(), rand.Int31())
+	str := fmt.Sprintf("%v%v", time.Now().Minute(), rand.Int31())
 
 	num, err := strconv.Atoi(str)
 

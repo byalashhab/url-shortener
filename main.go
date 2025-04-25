@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -12,6 +11,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-    fmt.Printf("%+v",db)
+	if err := db.Init(); err != nil {
+		log.Fatal(err)
+	}
 
+	server := NewServer(":1234", db)
+	server.Run()
 }
