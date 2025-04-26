@@ -36,7 +36,7 @@ func NewStorage() (*PGStorage, error) {
 
 func (pg *PGStorage) Init() error {
 	query := `create table if not exists url(
-		id int primary key,
+		id bigint primary key,
 		shortURL varchar(100),
 		longURL varchar(100)
 	)`
@@ -52,8 +52,8 @@ func (pg *PGStorage) AddShortURL(longURL string) (string, error) {
 
 	err := pg.db.QueryRow(q, longURL).Scan(&shortURL)
 
-	if err != nil {
-		log.Fatal(err)
+	if err != nil && err != sql.ErrNoRows {
+		return "", err
 	}
 
 	if shortURL != "" {
@@ -76,12 +76,13 @@ func (pg *PGStorage) AddShortURL(longURL string) (string, error) {
 func (pg *PGStorage) GetLongURL(shortURL string) (string, error) {
 
 	var longURL string
+
 	q := "select longURL from url where shortURL = $1"
 
 	err := pg.db.QueryRow(q, shortURL).Scan(&longURL)
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	return longURL, nil

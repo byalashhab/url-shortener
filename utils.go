@@ -27,7 +27,7 @@ func GenerateHash(longURL string) (string, int) {
 // between 0 - 62^(7)
 func generateUniqueID() int {
 
-	str := fmt.Sprintf("%v%v", time.Now().Minute(), rand.Int31())
+	str := fmt.Sprintf("%v%v", time.Now().Nanosecond(), rand.Int31())
 
 	num, err := strconv.Atoi(str)
 

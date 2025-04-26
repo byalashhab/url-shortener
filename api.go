@@ -1,9 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
+
 	"github.com/gorilla/mux"
 )
 
@@ -41,7 +43,27 @@ func (s *Server) HandleShortURLs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	WriteJSON(w, 200, "Hello from generation route")
+	var req struct {
+		LongURL string `json:"longURL"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		WriteJSON(w, 500, "server error")
+		return
+	}
+
+	if req.LongURL == "" {
+		WriteJSON(w, 400, "bad request")
+		return
+	}
+
+	hash, err := s.storage.AddShortURL(req.LongURL)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	WriteJSON(w, 201, hash)
 }
 
 func (s *Server) HandleGetLongURLs(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +76,20 @@ func (s *Server) HandleGetLongURLs(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	WriteJSON(w, 200, "Hello from returning route, "+id)
+	longURL, err := s.storage.GetLongURL(id)
+
+	if err != nil {
+
+		if err == sql.ErrNoRows {
+			WriteJSON(w, 404, "not found")
+			return
+		} else {
+			log.Fatal(err)
+		}
+
+	}
+
+	WriteJSON(w, 200, longURL)
 }
 
 func WriteJSON(w http.ResponseWriter, status int, v any) {

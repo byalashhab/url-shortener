@@ -4,6 +4,8 @@ import (
 	"log"
 )
 
+// "log"
+
 func main() {
 	db, err := NewStorage()
 
@@ -17,4 +19,7 @@ func main() {
 
 	server := NewServer(":1234", db)
 	server.Run()
+
+	
+
 }
