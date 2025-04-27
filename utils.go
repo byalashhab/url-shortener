@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"math/rand"
-	"strconv"
-	"time"
 )
 
 func GenerateHash(longURL string) (string, int) {
@@ -15,10 +11,12 @@ func GenerateHash(longURL string) (string, int) {
 	base := len(base62Chars)
 	result := ""
 
-	for id > 0 {
-		remainder := id % base
+	tempID := id
+
+	for tempID > 0 {
+		remainder := tempID % base
 		result = string(base62Chars[remainder]) + result
-		id /= base
+		tempID /= base
 	}
 
 	return result, id
@@ -26,14 +24,6 @@ func GenerateHash(longURL string) (string, int) {
 
 // between 0 - 62^(7)
 func generateUniqueID() int {
-
-	str := fmt.Sprintf("%v%v", time.Now().Nanosecond(), rand.Int31())
-
-	num, err := strconv.Atoi(str)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return num
+	const max = 3_000_000_000_000
+    return rand.Intn(int(max))  
 }

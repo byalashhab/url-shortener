@@ -37,7 +37,7 @@ func NewStorage() (*PGStorage, error) {
 func (pg *PGStorage) Init() error {
 	query := `create table if not exists url(
 		id bigint primary key,
-		shortURL varchar(100),
+		shortURL varchar(100) unique,
 		longURL varchar(100)
 	)`
 

@@ -1,8 +1,6 @@
 package main
 
-import (
-	"log"
-)
+import "log"
 
 // "log"
 
@@ -19,7 +17,5 @@ func main() {
 
 	server := NewServer(":1234", db)
 	server.Run()
-
-	
 
 }
