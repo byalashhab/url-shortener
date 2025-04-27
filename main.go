@@ -2,8 +2,6 @@ package main
 
 import "log"
 
-// "log"
-
 func main() {
 	db, err := NewStorage()
 
